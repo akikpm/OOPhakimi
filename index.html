@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>WeatherWise</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af); /* Cool gradient for a weather feel */
+            color: #ffffff;
+            padding: 20px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1); /* Slightly transparent header */
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-top: 10px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        p {
+            font-size: 1.1em;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        label {
+            color: #ffecb3; 
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input {
+            padding: 10px;
+            border: 2px solid #ffecb3; 
+            border-radius: 8px;
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.2); 
+            color: #ffffff;
+            transition: border-color 0.3s;
+            width: 80%; /* Responsive input width */
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ffffff; 
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s; 
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6); 
+        }
+
+        #weatherIcon {
+            width: 100px; 
+            height: 100px;
+            margin: 10px 0;
+        }
+
+        #weatherDetails {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            margin: 20px 0; 
+            width: 90%; /* Responsive width */
+        }
+        .small-input {
+        width: 150px;  /* Set the desired width */
+        height: 30px;  /* Set the desired height */
+        padding: 5px;  /* Adjust padding */
+        font-size: 14px;  /* Optional: adjust font size */
+        }
+
+        
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <h1>WeatherWise</h1>
+        <p>Your Guide to Outdoor Adventures with Real-Time Weather Insights</p>
+    </header>
+    
+    <label>Enter City:</label>
+    <input type="text" id="weather_input" placeholder="Enter city" class="small-input">
+    <button onclick="buttonClicked()">Read Forecast</button>
+    
+    <div id="weatherDetails" style="display: none;">
+        <img id="weatherIcon">
+        <p id="demo0"></p>
+        <p id="demo1"></p>
+        <p id="demo2"></p>
+        <p id="demo3"></p>
+        <p id="demo4"></p>
+        <p id="demo5"></p>
+        <p id="demo6"></p>
+        <p id="demo7"></p>
+        <p id="demo8"></p>
+        <p id="demo9"></p>
+        <p id="demo10"></p>
+        <p id="demo11"></p>
+    </div>
+
+    <button id="outdoorActivitiesButton" style="display: none;" onclick="goToOutdoorActivities()">Outdoor Activities</button>
+
+    <script>
+        function buttonClicked() { 
+            const city = document.getElementById("weather_input").value;
+
+            fetch(`https://api.weatherapi.com/v1/forecast.json?key=32804b24a847407391c53709241010&q=${city}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("City not found");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    const icon = data.current.condition.icon;
+                    const country = data.location.country;
+                    const region = data.location.region;
+                    const weatherDescription = data.current.condition.text;
+                    const localtime = data.location.localtime;
+                    const currenttemptcel = data.current.temp_c;  
+                    const currenttemptfar = data.current.temp_f;  
+                    const windmet = data.current.wind_mph;
+                    const windkilo = data.current.wind_kph;
+                    const humidity = data.current.humidity;
+                    const condition = data.forecast.forecastday[0].day.condition.text;
+                    const rain = data.forecast.forecastday[0].day.daily_chance_of_rain; 
+                    const snow = data.forecast.forecastday[0].day.daily_chance_of_snow; 
+
+                    document.getElementById("weatherIcon").src = `https:${icon}`;
+                    document.getElementById("demo0").textContent = `Country Name: ${country}`;
+                    document.getElementById("demo1").textContent = `Region: ${region}`;
+                    document.getElementById("demo2").textContent = `Weather: ${weatherDescription}`;
+                    document.getElementById("demo3").textContent = `Local Time: ${localtime}`;
+                    document.getElementById("demo4").textContent = `Current Temperature (Celsius): ${currenttemptcel}`;
+                    document.getElementById("demo5").textContent = `Current Temperature (Fahrenheit): ${currenttemptfar}`;
+                    document.getElementById("demo6").textContent = `Wind Speed (Miles per hour): ${windmet}`;
+                    document.getElementById("demo7").textContent = `Wind Speed (Kilometer per hour): ${windkilo}`;
+                    document.getElementById("demo8").textContent = `Humidity: ${humidity}%`;
+                    document.getElementById("demo9").textContent = `Today's Weather Condition: ${condition}`;
+                    document.getElementById("demo10").textContent = `Chances of Rain: ${rain}%`;
+                    document.getElementById("demo11").textContent = `Chances of Snow: ${snow}%`;
+
+                    // Show weather details and outdoor activities button
+                    document.getElementById("weatherDetails").style.display = 'block';
+                    document.getElementById("outdoorActivitiesButton").style.display = 'block';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert("Failed to fetch weather data. Please check the city name and try again.");
+                });
+        }
+
+        function goToOutdoorActivities() {
+            window.location.href = 'outdoor.html';
+        }
+    </script>
+</body>
+</html>

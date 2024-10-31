@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Equipment Checklist</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #1e3c72, #2a5298); /* Dark blue gradient */
+            color: #ffffff;
+            padding: 20px;
+            margin: 0;
+            height: 100vh; /* Full height for centering */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Star background effect */
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            opacity: 0.8;
+            animation: twinkling 1.5s infinite alternate;
+        }
+
+        @keyframes twinkling {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        /* Generate stars */
+        .star:nth-child(1) { width: 3px; height: 3px; top: 10%; left: 20%; }
+        .star:nth-child(2) { width: 5px; height: 5px; top: 30%; left: 50%; }
+        .star:nth-child(3) { width: 2px; height: 2px; top: 70%; left: 80%; }
+        .star:nth-child(4) { width: 4px; height: 4px; top: 20%; left: 30%; }
+        .star:nth-child(5) { width: 6px; height: 6px; top: 40%; left: 60%; }
+        .star:nth-child(6) { width: 3px; height: 3px; top: 80%; left: 10%; }
+        .star:nth-child(7) { width: 5px; height: 5px; top: 50%; left: 90%; }
+        .star:nth-child(8) { width: 2px; height: 2px; top: 60%; left: 40%; }
+        .star:nth-child(9) { width: 4px; height: 4px; top: 30%; left: 70%; }
+        .star:nth-child(10) { width: 6px; height: 6px; top: 10%; left: 80%; }
+
+        h1 {
+            font-size: 3em;
+            margin: 10px 0;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.6);
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%; /* Full width for the form group */
+        }
+
+        label {
+            color: #ffecb3; /* Light yellow for labels */
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        input {
+            padding: 10px;
+            border: 2px solid #ffecb3; /* Light yellow border */
+            border-radius: 8px;
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent dark */
+            color: #ffffff;
+            width: calc(100% - 24px); /* Full width input */
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ffffff; /* Change border color on focus */
+        }
+
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298); /* Dark blue gradient */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition */
+            margin: 5px; /* Space between buttons */
+        }
+
+        button:hover {
+            transform: translateY(-3px); /* Slight lift on hover */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6); /* Enhanced shadow on hover */
+        }
+
+        #checklistDisplay {
+            list-style-type: none; /* Remove default list styling */
+            padding: 0; /* Remove padding */
+        }
+
+        li {
+            margin: 10px 0; /* Space between list items */
+        }
+    </style>
+</head>
+<body>
+    <div class="mainWrapper">
+        <h1>Activity Equipment Checklist</h1>  
+
+        <div class="form-group">
+            <label for="itemName">Item Name:</label>
+            <input type="text" id="itemName" placeholder="Enter item name" required>
+        </div>
+        <div class="form-group">
+            <label for="itemDescription">Item Description:</label>
+            <input type="text" id="itemDescription" placeholder="Enter item description" required>
+        </div>
+        <button id="btnCreate">Add Item</button>
+        <button id="btnDelete">Clear All</button>
+        <button onclick="window.location.href='index.html'">Back to Homepage</button>
+
+        <ul id="checklistDisplay"></ul>
+
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <script>
+        // Load checklist from localStorage or initialize it
+        let checklist = JSON.parse(localStorage.getItem('checklist')) || [];
+
+        const btnCreate = document.getElementById('btnCreate');
+        const itemName = document.getElementById('itemName');
+        const itemDescription = document.getElementById('itemDescription');
+        const checklistDisplay = document.getElementById('checklistDisplay');
+
+        // Function to display checklist
+        function displayChecklist() {
+            checklistDisplay.innerHTML = ''; // Clear the current list
+            checklist.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = item.name;
+
+                // Create a read button to display description
+                const readButton = document.createElement('button');
+                readButton.textContent = 'Read';
+                readButton.addEventListener('click', () => {
+                    alert(`Description: ${item.description}`); // Display description in an alert
+                });
+
+                // Create an update button
+                const updateButton = document.createElement('button');
+                updateButton.textContent = 'Update';
+                updateButton.addEventListener('click', () => {
+                    // Create input fields for updating the item name and description
+                    const nameInput = document.createElement('input');
+                    nameInput.type = 'text';
+                    nameInput.value = item.name; // Set current item name as the value
+                    
+                    const descriptionInput = document.createElement('input');
+                    descriptionInput.type = 'text';
+                    descriptionInput.value = item.description; // Set current item description as the value
+                    listItem.appendChild(nameInput);
+                    listItem.appendChild(descriptionInput);
+
+                    // Create a save button to confirm the update
+                    const saveButton = document.createElement('button');
+                    saveButton.textContent = 'Save';
+                    saveButton.addEventListener('click', () => {
+                        const newName = nameInput.value.trim();
+                        const newDescription = descriptionInput.value.trim();
+                        if (newName && newDescription) {
+                            checklist[index] = { name: newName, description: newDescription }; // Update the item in the array
+                            saveChecklist(); // Save updated checklist to localStorage
+                            displayChecklist(); // Refresh display
+                        }
+                    });
+
+                    listItem.appendChild(saveButton); // Add save button to list item
+                });
+
+                // Add a delete button next to each item
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', () => {
+                    checklist.splice(index, 1); // Remove item from array
+                    saveChecklist(); // Save updated checklist to localStorage
+                    displayChecklist(); // Refresh display
+                });
+
+                listItem.appendChild(readButton); // Add read button to list item
+                listItem.appendChild(updateButton);
+                listItem.appendChild(deleteButton);
+                checklistDisplay.appendChild(listItem);
+            });
+        }
+
+        // Function to save checklist to localStorage
+        function saveChecklist() {
+            localStorage.setItem('checklist', JSON.stringify(checklist));
+        }
+
+        // Event listener for adding an item
+        btnCreate.addEventListener('click', () => {
+            const name = itemName.value.trim();
+            const description = itemDescription.value.trim();
+            if (name && description) {
+                checklist.push({ name, description }); // Add new item with name and description
+                saveChecklist(); // Save updated checklist to localStorage
+                displayChecklist(); // Refresh display
+                itemName.value = ''; // Clear input field
+                itemDescription.value = ''; // Clear description field
+            }
+        });
+
+        // Event listener for clearing all items
+        document.getElementById('btnDelete').addEventListener('click', () => {
+            checklist = []; // Reset checklist array
+            saveChecklist(); // Save updated checklist to localStorage
+            displayChecklist(); // Refresh display
+        });
+
+        // Display the checklist on page load
+        displayChecklist();
+    </script>
+</body>
+</html>
